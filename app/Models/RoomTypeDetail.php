@@ -25,4 +25,20 @@ class RoomTypeDetail extends Model
     {
         return $this->hasMany(Price::class, 'type_room_detail_id', 'id');
     }
+    public function Img()
+    {
+        return $this->morphMany(Image::class, 'object', 'type');
+    }
+    public function Room()
+    {
+        return $this->hasMany(Room::class, 'type_room', 'id');
+    }
+    public function Service()
+    {
+        return $this->belongsToMany(Service::class, RoomTypeService::class, 'room_type_id', 'service_id');
+    }
+    public function Convenient()
+    {
+        return $this->belongsToMany(Convenient::class, ConvenientRoom::class, 'room_type_id', 'conventient_id');
+    }
 }

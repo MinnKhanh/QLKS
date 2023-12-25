@@ -78,7 +78,7 @@ class Payment extends Component
         if ($this->dateCreate) {
             $list->whereDate('created_at', $this->dateCreate);
         }
-        return $list;
+        return $list->orderBy('id', 'desc');
     }
     public function getListBooking($id)
     {

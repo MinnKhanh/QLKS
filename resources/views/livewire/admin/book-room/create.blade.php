@@ -5,7 +5,7 @@
 <div class="page-content fade-in-up">
     <div class="ibox">
         <div class="ibox-head">
-            <div class="ibox-title">Bảng giá</div>
+            <div class="ibox-title">Thông tin Loại phòng</div>
         </div>
         <div class="ibox-body">
             <form>

@@ -19,4 +19,16 @@ class RoomController extends Controller
     {
         return view('admin.room.update');
     }
+    public function createRoom()
+    {
+        return view('admin.room.create-room');
+    }
+    public function typeRoom()
+    {
+        return view('admin.room.type-room');
+    }
+    public function roomCapacity()
+    {
+        return view('admin.room.room-capacity');
+    }
 }

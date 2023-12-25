@@ -1,9 +1,9 @@
 @extends('layouts.master')
 
-@section('title', 'Báo cáo sửa chữa thông thường')
+
 @section('css')
     <link href="{{ asset('assets/css/table-common.css') }}" rel="stylesheet" />
 @endsection
 @section('content')
-    @livewire('admin.book-room.custom-room-booking', ['idRoom' => $id])
+    @livewire('admin.book-room.custom-room-booking', ['idRoom' => $id, 'bookingId' => $bookingId])
 @endsection

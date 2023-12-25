@@ -13,16 +13,16 @@ class PayMent extends Model
         'bill_id',
         'creator_id',
         'customer_id',
-        'booking_id',
         'amount',
         'phone',
         'cmtnd',
         'payment_method',
         'note',
-        'price',
         'satus',
         'discount',
-        'late_checkin_fee',
-        'early_checkIn_fee',
     ];
+    public function Customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id', 'id');
+    }
 }

@@ -19,4 +19,8 @@ class Service extends Model
     {
         return $this->belongsTo(TypeService::class, 'type_service', 'id');
     }
+    public function Room()
+    {
+        return $this->belongsToMany(Room::class, RoomService::class, 'service_id', 'room_id', 'id', 'id');
+    }
 }

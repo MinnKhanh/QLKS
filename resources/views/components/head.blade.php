@@ -4,9 +4,9 @@
     <meta name="viewport" content="width=device-width initial-scale=1.0">
     <!-- csrf token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ env('APP_NAME', 'IMS-POS') }} | @yield('title')</title>
+    <title>{{ env('APP_NAME', 'K.HOTEL') }} | @yield('title')</title>
     <!-- GLOBAL MAINLY STYLES-->
-    <link rel="icon" href="{{ asset('assets/favicon.ico') }}" type="image/x-icon">
+    {{-- <link rel="icon" href="{{ asset('assets/favicon.ico') }}" type="image/x-icon"> --}}
     <link href="{{ asset('assets/css/bootstrap.min.css') }}" type="text/css" rel="stylesheet" />
     <link href="{{ asset('assets/css/font-awesome.min.css') }}" type="text/css" rel="stylesheet" />
     <link href="{{ asset('assets/css/themify-icons.css') }}" type="text/css" rel="stylesheet" />

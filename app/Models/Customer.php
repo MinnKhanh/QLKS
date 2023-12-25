@@ -16,6 +16,7 @@ class Customer extends Model
         'city',
         'cmtnd',
         'phone',
+        'email',
         'gender',
         'country',
         'birth_day',

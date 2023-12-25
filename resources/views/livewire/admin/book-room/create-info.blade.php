@@ -1,6 +1,7 @@
 @php
     use App\Enum\EMotorbike;
     use App\Enums\StatusRoomEnum;
+    use App\Enums\TypeTimeEnum;
 @endphp
 @push('css')
     <style>
@@ -21,6 +22,34 @@
         </div>
         <div class="ibox-body pt-0">
             <div>
+                <div class="row mb-2 mt-4">
+                    <div class="col-3 row">
+                        <label for="status" class="col-5 col-form-label pd-0">Trạng thái phòng</label>
+                        <div class="col-7">
+                            <select id="" wire:model='status' style="width:100%;" class="form-control">
+                                <option value="{{ StatusRoomEnum::EMPTY }}">Có thể sử dụng</option>
+                                <option value="{{ StatusRoomEnum::FIXING }}">Không thể sử dụng</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <button wire:click="changeStatusRoom" type="button" class="btn btn-outline-primary mt-2"><i
+                                class="fa fa-disk"></i> Kết chuyển</button>
+                    </div>
+                    <div class="col-4 row align-items-center">
+                        <label for="customer_name" class="col-3 col-form-label pd-0">Trạng
+                            thái</label>
+                        <div class="col-9">
+                            <select wire:model="typeBooking" style="width: 100%;" class="custom-select">
+                                <option value="1">Tạo ngay</option>
+                                <option value="2">Đặt trước</option>
+                            </select>
+                            @error('typePrice')
+                                <span class="error text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
                 <div class="row mb-5">
                     <div class="col-12 font-weight-bold border bg-light p-3">Thông tin khách hàng</div>
                 </div>
@@ -76,8 +105,8 @@
                 <div class="form-group row">
                     <label class="col-1 col-form-label text-right">Loại thời gian</label>
                     <div class="col-2">
-                        <select wire:model="typeTime" id="typeTime" class="custom-select select2-box">
-                            <option value="">--Chọn--</option>
+                        <select wire:model="typeTime" id="typeTime" wire:change="changeTypeTime"
+                            class="custom-select select2-box">
                             <option value="1">Ngày</option>
                             <option value="2">Đêm</option>
                             <option value="3">Giờ</option>
@@ -112,52 +141,86 @@
                 <div class="row mt-5 mb-5">
                     <div class="col-12 font-weight-bold border bg-light p-3">Thông tin nhận phòng</div>
                 </div>
-                <div class="d-flex row">
-                    <label class="col-1 col-form-label text-right ">Giờ vào</label>
-                    <div class="col-3 row">
-                        <div class="col-12 pr-0">
-                            <input type="datetime-local" wire:model.lazy="fromDateTime" class="form-control">
-                            @error('fromDateTime')
-                                <span class="error text-danger">{{ $message }}</span>
-                            @enderror
+                <div class="row justify-content-center">
+                    <div class="col-lg-3 row align-items-center mb-5">
+                        <label class="col-5 col-form-label text-right ">Thời gian vào</label>
+                        <div class="col-7 row">
+                            <div class="col-12 pr-0">
+                                <input type="date" wire:model.lazy="fromDateTime" id="fromDateTime"
+                                    wire:change="changeFromAndToDateTime" class="form-control">
+                                @error('fromDateTime')
+                                    <span class="error text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
                         </div>
-                        {{-- <div class="col-2 justify-content-center align-items-center">
-                            <p class="text-center pt-2">～</p>
+                    </div>
+                    @if ($typeTime == TypeTimeEnum::DAY)
+                        <div class="col-lg-3 row align-items-center mb-5">
+                            <label for="searchStatus" class="col-5 col-form-label text-right">Thời gian ra</label>
+                            <div class="col-7">
+                                <input wire:model.lazy="toDateTime" id="toDateTime"
+                                    wire:change="changeFromAndToDateTime" type="date" class="form-control">
+                                @error('toDateTime')
+                                    <span class="error text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
                         </div>
+                    @endif
+                    <div class="col-lg-3 row align-items-center mb-5">
+                        <label for="searchStatus" class="col-7 col-form-label text-right">Thời gian thuê phòng
+                            (Đêm/Giờ)</label>
                         <div class="col-5">
-                            <input wire:model.lazy="toDateTime" type="datetime-local" class="form-control">
-                            @error('toDateTime')
+                            <input wire:model.lazy="rentalTime" wire:change="changeRentalTime" type="number"
+                                class="form-control" {{ $typeTime == TypeTimeEnum::NIGHT ? 'disabled' : '' }}>
+                            @error('rentalTime')
                                 <span class="error text-danger">{{ $message }}</span>
                             @enderror
-                        </div> --}}
+                        </div>
                     </div>
-                    <label for="searchStatus" class="col-1 col-form-label text-right">Số người</label>
-                    <div class="col-2">
-                        <input wire:model.lazy="numberOfPeople" type="number" class="form-control">
-                        @error('numberOfPeople')
-                            <span class="error text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <label for="searchStatus" class="col-2 col-form-label text-right">Thời gian thuê phòng
-                        (Đêm/Ngày/Giờ)</label>
-                    <div class="col-3">
-                        <input wire:model.lazy="rentalTime" type="number" class="form-control">
-                        @error('rentalTime')
-                            <span class="error text-danger">{{ $message }}</span>
-                        @enderror
+
+                    <div class="col-lg-3 row align-items-center mb-5">
+                        <label class="col-2 col-form-label text-right ">Giờ vào</label>
+                        <div class="col-6 row mr-1">
+                            <div class="col-12 pr-0">
+                                <input type="time" wire:model.lazy="hourIn" class="form-control">
+                                @error('fromDateTime')
+                                    <span class="error text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                        <button type="button" wire:click="getCurrentTime" class="col-3 btn btn-secondary"
+                            style="font-size: 12px;" data-dismiss="modal">nhập</button>
                     </div>
                 </div>
-                {{-- <label for="searchStatus" class="col-1 col-form-label text-right">Trạng thái phòng</label>
-                    <div class="col-3">
-                        <select wire:model="statusRoom" id="seachWarehouse" class="form-control">
-                            <option value="">--Chọn--</option>
-                            <option value="1">Khách đặt trước</option>
-                            <option value="2">Đang có khách</option>
-                            <option value="3">Trống</option>
-                            <option value="4">Đang sửa</option>
-                            <option value="5">Chưa dọn</option>
-                        </select>
-                    </div> --}}
+                <div class="row">
+                    <div class="col-lg-4 row align-items-center mb-5">
+                        <label for="searchStatus" class="col-3 col-form-label text-right">Số người lớn</label>
+                        <div class="col-9">
+                            <input wire:model.lazy="numberOfAdults" wire:change="changeNumberPeople" type="number" class="form-control">
+                            @error('numberOfAdults')
+                                <span class="error text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-lg-4 row align-items-center mb-5">
+                        <label for="searchStatus" class="col-3 col-form-label text-right">Số trẻ em</label>
+                        <div class="col-9">
+                            <input wire:model.lazy="numberOfChildren" wire:change="changeNumberPeople" type="number" class="form-control">
+                            @error('numberOfChildren')
+                                <span class="error text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-4 row align-items-center mb-5">
+                        <label for="searchStatus" class="col-3 col-form-label text-right">Tiền trả trước</label>
+                        <div class="col-9">
+                            <input wire:model.lazy="deposit" type="number" class="form-control">
+                            @error('deposit')
+                                <span class="error text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="form-group row mt-5">
                 <label for="Color" class="col-1 col-form-label text-right ">Ghi chú</label>
@@ -167,8 +230,15 @@
             </div>
             <div class="form-group row mt-5 mb-5">
                 <div class="ml-5 col-12 text-center">
-                    <button type="button" wire:click="create" class="btn btn-warning add-new"><i
-                            class="fa fa-plus mr-2"></i>Xác nhận</button>
+                    @if ($isBooking)
+                        <button type="button" wire:click="create" class="btn btn-warning add-new"><i
+                                class="fa fa-plus mr-2"></i>Vào</button>
+                    @else
+                        <button type="button" wire:click="create" class="btn btn-warning add-new"
+                            {{ $status == StatusRoomEnum::FIXING ? 'disabled' : '' }}><i
+                                class="fa fa-plus mr-2"></i>Xác
+                            nhận</button>
+                    @endif
                 </div>
             </div>
         </div>
@@ -313,6 +383,9 @@
                                                 <input type="text" id="cccd" class="form-control"
                                                     wire:model.lazy="customerCmtnd">
                                             </div>
+                                            @error('customerCmtnd')
+                                            <span class="error text-danger">{{ $message }}</span>
+                                        @enderror
                                         </div>
 
                                         <div class="form-group row">
@@ -350,23 +423,27 @@
                                         <div class="form-group row">
                                             <label for="province_id" class="col-2 col-form-label ">Tỉnh/TP</label>
                                             <div class="col-10">
-                                                <select id="province_id" name="province_id"
+                                                {{-- <select id="province_id" name="province_id"
                                                     class="form-control select2-box" wire:model.lazy="customerCity">
                                                     <option value="">--Chọn thành phố--</option>
 
-                                                </select>
+                                                </select> --}}
+                                                <input name="customer_address" type="text" class="form-control"
+                                                wire:model.lazy="customerCity">
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label for="district_id"
                                                 class="col-2 col-form-label ">Quận/Huyện</label>
                                             <div class="col-10">
-                                                <select id="district_id" name="district_id"
+                                                {{-- <select id="district_id" name="district_id"
                                                     class="form-control select2-box"
                                                     wire:model.lazy="customerDistrict">
                                                     <option value="">--Chọn Quận/ Huyện--</option>
 
-                                                </select>
+                                                </select> --}}
+                                                <input name="customer_address" type="text" class="form-control"
+                                                wire:model.lazy="customerDistrict">
                                             </div>
                                         </div>
                                         <div class="form-group row">
@@ -435,11 +512,168 @@
 @section('js')
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function() {
+            let dates = {{ Js::from($dates) }}
+            dates = dates.map(element => {
+                return [new Date(element[0]), new Date(element[1])]
+            });
+            console.log(dates)
             $('#typeTime').on('change', function(e) {
                 var data = $('#typeTime').select2("val");
                 @this.set('typeTime', data);
                 window.livewire.emit('updatePrice');
+                window.livewire.emit('updateTypeTime');
             });
+
+            function startChange() {
+                window.livewire.emit('setfromDate', {
+                    ['fromDateTime']: start.value()
+                });
+                if ($("#toDateTime").length) {
+                    var startDate = start.value(),
+                        endDate = end.value();
+                    if (startDate) {
+                        startDate = new Date(startDate);
+                        startDate.setDate(startDate.getDate());
+                        end.min(startDate);
+                    } else if (endDate) {
+                        start.max(new Date(endDate));
+                    } else {
+                        endDate = new Date();
+                        start.max(endDate);
+                        end.min(endDate);
+                    }
+                }
+            }
+
+            function endChange() {
+                var endDate = end.value(),
+                    startDate = start.value();
+                window.livewire.emit('settoDate', {
+                    ['toDateTime']: endDate
+                });
+                if (endDate) {
+                    endDate = new Date(endDate);
+                    endDate.setDate(endDate.getDate());
+                    start.max(endDate);
+                } else if (startDate) {
+                    end.min(new Date(startDate));
+                } else {
+                    endDate = new Date();
+                    start.max(endDate);
+                    end.min(endDate);
+                }
+            }
+
+            function compareDates(date, dates) {
+                console.log(date)
+                for (var i = 0; i < dates.length; i++) {
+                    if (date >= dates[i][0] && date <= dates[i][1]) {
+                        return true
+                    }
+                }
+            }
+            var start = $("#fromDateTime").kendoDatePicker({
+                change: startChange,
+                dates: dates,
+                disableDates: function(date) {
+                    var dates = $("#fromDateTime").data("kendoDatePicker").options.dates;
+                    if (date && compareDates(date, dates)) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            }).data("kendoDatePicker");
+
+            var end = $("#toDateTime").kendoDatePicker({
+                change: endChange,
+                dates: dates,
+                disableDates: function(date) {
+                    var dates = $("#fromDateTime").data("kendoDatePicker").options.dates;
+                    if (date && compareDates(date, dates)) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            }).data("kendoDatePicker");
+
+            start.max(end.value());
+            end.min(start.value());
+            window.addEventListener('setDatePicker', event => {
+                console.log($("#toDateTime").length);
+
+                function startChange() {
+                    window.livewire.emit('setfromDate', {
+                        ['fromDateTime']: start.value()
+                    });
+                    if ($("#toDateTime").length) {
+                        var startDate = start.value(),
+                            endDate = end.value();
+                        if (startDate) {
+                            startDate = new Date(startDate);
+                            startDate.setDate(startDate.getDate());
+                            end.min(startDate);
+                        } else if (endDate) {
+                            start.max(new Date(endDate));
+                        } else {
+                            endDate = new Date();
+                            start.max(endDate);
+                            end.min(endDate);
+                        }
+                    }
+                }
+
+                function endChange() {
+                    var endDate = end.value(),
+                        startDate = start.value();
+                    window.livewire.emit('settoDate', {
+                        ['toDateTime']: endDate
+                    });
+                    if (endDate) {
+                        endDate = new Date(endDate);
+                        endDate.setDate(endDate.getDate());
+                        start.max(endDate);
+                    } else if (startDate) {
+                        end.min(new Date(startDate));
+                    } else {
+                        endDate = new Date();
+                        start.max(endDate);
+                        end.min(endDate);
+                    }
+                }
+
+                var start = $("#fromDateTime").kendoDatePicker({
+                    change: startChange,
+                    dates: dates,
+                    disableDates: function(date) {
+                        var dates = $("#fromDateTime").data("kendoDatePicker").options.dates;
+                        if (date && compareDates(date, dates)) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                }).data("kendoDatePicker");
+                if ($("#toDateTime").length) {
+                    var end = $("#toDateTime").kendoDatePicker({
+                        change: endChange,
+                        dates: dates,
+                        disableDates: function(date) {
+                            var dates = $("#fromDateTime").data("kendoDatePicker").options
+                                .dates;
+                            if (date && compareDates(date, dates)) {
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        }
+                    }).data("kendoDatePicker");
+                    start.max(end.value());
+                    end.min(start.value());
+                }
+            });
+
         })
     </script>
 @endsection

@@ -20,4 +20,8 @@ class TypeRoom extends Model
     {
         return $this->hasMany(RoomTypeDetail::class, 'type_room_id', 'id');
     }
+    public function Img()
+    {
+        return $this->morphMany(Image::class, 'object', 'type');
+    }
 }
