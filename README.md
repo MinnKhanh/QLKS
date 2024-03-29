@@ -1,6 +1,6 @@
 <header>
         <a href="index.html">
-            <img src="logo-khach-san.png" alt="Logo khách sạn">
+            <img src="https://images.squarespace-cdn.com/content/v1/5aadf482aa49a1d810879b88/1626698419120-J7CH9BPMB2YI728SLFPN/1.jpg?format=1500w" alt="Logo khách sạn">
         </a>
         <h1>Phần Mềm Quản Lý Khách Sạn</h1>
     </header>
